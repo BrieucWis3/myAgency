@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="myAgencyModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="option">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="name" Type="varchar" MaxLength="255" Nullable="false" />
+  </EntityType>
+  <EntityType Name="property">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="title" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="description" Type="nvarchar" MaxLength="500" />
+    <Property Name="surface" Type="int" Nullable="false" />
+    <Property Name="rooms" Type="int" Nullable="false" />
+    <Property Name="bedrooms" Type="int" Nullable="false" />
+    <Property Name="floor" Type="int" Nullable="false" />
+    <Property Name="price" Type="int" Nullable="false" />
+    <Property Name="heat" Type="int" Nullable="false" />
+    <Property Name="city" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="address" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="postal_code" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="sold" Type="bit" Nullable="false" />
+    <Property Name="created_at" Type="datetime" Nullable="false" />
+    <Property Name="filename" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="updated_at" Type="datetime" Nullable="false" />
+  </EntityType>
+  <!--Erreurs détectées durant la génération :
+avertissement 6002: La table/vue 'myAgency.dbo.property_option' n'a pas de clé primaire définie. La clé a été déduite et la définition a été créée en tant que table/vue en lecture seule.-->
+  <EntityType Name="property_option">
+    <Key>
+      <PropertyRef Name="property_id" />
+      <PropertyRef Name="option_id" />
+    </Key>
+    <Property Name="property_id" Type="int" Nullable="false" />
+    <Property Name="option_id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="property_search">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="search">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" Nullable="false" />
+    <Property Name="text" Type="varchar" MaxLength="255" Nullable="false" />
+  </EntityType>
+  <EntityType Name="sysdiagrams">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+    <Property Name="principal_id" Type="int" Nullable="false" />
+    <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="version" Type="int" />
+    <Property Name="definition" Type="varbinary(max)" />
+  </EntityType>
+  <EntityType Name="user">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="username" Type="varchar" MaxLength="255" Nullable="false" />
+    <Property Name="password" Type="varchar" MaxLength="255" Nullable="false" />
+  </EntityType>
+  <Association Name="FK_property_option_option">
+    <End Role="option" Type="Self.option" Multiplicity="1" />
+    <End Role="property_option" Type="Self.property_option" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="option">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="property_option">
+        <PropertyRef Name="option_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_property_option_property">
+    <End Role="property" Type="Self.property" Multiplicity="1" />
+    <End Role="property_option" Type="Self.property_option" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="property">
+        <PropertyRef Name="id" />
+      </Principal>
+      <Dependent Role="property_option">
+        <PropertyRef Name="property_id" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="myAgencyModelStoreContainer">
+    <EntitySet Name="option" EntityType="Self.option" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="property" EntityType="Self.property" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="property_search" EntityType="Self.property_search" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="search" EntityType="Self.search" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="user" EntityType="Self.user" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="property_option" EntityType="Self.property_option" store:Type="Tables" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [property_option].[property_id] AS [property_id], 
+    [property_option].[option_id] AS [option_id]
+    FROM [dbo].[property_option] AS [property_option]</DefiningQuery>
+    </EntitySet>
+    <AssociationSet Name="FK_property_option_option" Association="Self.FK_property_option_option">
+      <End Role="option" EntitySet="option" />
+      <End Role="property_option" EntitySet="property_option" />
+    </AssociationSet>
+    <AssociationSet Name="FK_property_option_property" Association="Self.FK_property_option_property">
+      <End Role="property" EntitySet="property" />
+      <End Role="property_option" EntitySet="property_option" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

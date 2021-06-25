@@ -1,0 +1,75 @@
+﻿@using myAgency.Models;
+@using System.Globalization;
+
+@model Property
+
+@{
+    ViewBag.Title = "Show";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var heatTypes = ViewBag.heatTypes;
+}
+
+<div class="jumbotron">
+    <div class="row">
+        <div class="col-sm-8">
+            @if (Model.filename != "")
+            {
+                <img src="~/Fichiers/@Model.filename" style="width: 100%; height:auto;" />
+            }
+            else
+            {
+                <img src="~/Fichiers/20190518_213541.jpg" style="width: 100%; height:auto;" />
+            }
+        </div>
+        <div class="col-sm-4">
+            <h1>@Model.title</h1>
+            <h2>@Model.rooms @(Model.rooms == 1 ? "pièce" : "pièces") - @Model.surface m²</h2>
+            <div class="text-primary" style="color:blue; font-size:4rem; font-weight:bold;">
+                @Model.price.ToString("C0", CultureInfo.CreateSpecificCulture("fr-FR"))
+            </div>
+            <button class="btn btn-primary">Contacter l'agence</button>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div claa="row">
+        <div class="col-sm-8">
+            <p>@Model.description</p>
+            <h2>Caractéristiques</h2>
+            <table class="table table-striped">
+                <tbody>
+                    <tr>
+                        <td>Surface habitable</td>
+                        <td>@Model.surface m²</td>
+                    </tr>
+                    <tr>
+                        <td>Pièces</td>
+                        <td>@Model.rooms</td>
+                    </tr>
+                    <tr>
+                        <td>Chambres</td>
+                        <td>@Model.bedrooms</td>
+                    </tr>
+                    <tr>
+                        <td>Etage</td>
+                        <td>@Model.floor</td>
+                    </tr>
+                    <tr>
+                        <td>Chauffage</td>
+                        <td>@heatTypes[Model.heat]</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="col-sm-4">
+            <h2>Spécificités</h2>
+            <ul class="list-group">
+                @foreach(var option in Model.Option)
+                {
+                    <li class="list-group-item">@option.name</li>
+                }
+            </ul>
+        </div>
+    </div>
+</div>

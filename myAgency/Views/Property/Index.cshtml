@@ -1,0 +1,58 @@
+﻿@using myAgency.Models;
+@using System.Globalization;
+
+@model List<Property>
+
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="jumbotron">
+    <!--on transmet ici à la méthode Search() le modèle de filtrage initialement saisis s'il existe afin que la méthode intègre
+     les champs de filtrage déjà saisis et devant être préremplis (transmis depuis la méthode Index() )  -->
+        @Html.Action("Search", "Property", new { model=TempData["model"] })
+</div>
+
+<div class="container">
+    <h1>Voir tous nos biens</h1>
+    <a href="@Url.Action("Admin", "Property")" class="btn btn-primary">Gérer les biens</a> 
+    <a href="@Url.Action("Admin", "Option")" class="btn btn-primary">Gérer les options</a>
+</div>
+
+<div class="container" style="margin-top:2em;">
+    <div class="row" style="display:table;">
+        @foreach (var property in Model)
+        {
+            <div class="col-sm-4 col-xs-12" style="display:inline-block; vertical-align:top; float:none;">
+                <div class="card">
+                    @if (property.filename == "")
+                    {
+                        <img class="card-img-top" src="~/Fichiers/20190518_213541.jpg" alt="Card image cap" style="width: 100%; height:auto;">
+                    }
+                    else
+                    {
+                        <img class="card-img-top" src="~/Fichiers/@property.filename" alt="Card image cap" style="width: 100%; height:auto;">
+                    }
+                    <div class="card-body">
+                        <h4 class="card-title">
+                            <a href="@Url.Action("Show", "Property", new { id=property.id})">@property.title</a>
+                        </h4>
+                        <p class="card-text" style="font-size:medium;">@property.description</p>
+                        <p class="card-text" style="font-weight:bold; font-size:medium;">
+                            @property.surface m² - @property.city (@property.postal_code)
+                        </p>
+                        <p class="text-primary" style="font-size:4rem; font-weight:bold;">
+                            @property.price.ToString("C0", CultureInfo.CreateSpecificCulture("fr-FR"))
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        }
+
+    </div>
+</div>
+
+
+

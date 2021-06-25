@@ -1,0 +1,60 @@
+﻿@using myAgency.Models;
+
+@model PropertySearchViewModel
+@{
+    IList<SelectListItem> optionList = ViewBag.optionList;
+}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/css/bootstrap-select.min.css">
+
+<div class="container center-block">
+    <div class="text-center"><h2>Vos critères de recherche</h2></div>
+    @using (Html.BeginForm("Index", "Property", FormMethod.Get,
+      new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+    {
+        <div class="row">
+            <div class="col-md-3">
+                @Html.LabelFor(m => m.minSurface)
+                @Html.TextBoxFor(m => m.minSurface, new { @type = "number", @min = "0", @step = "1", @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                @Html.LabelFor(m => m.maxPrice)
+                @Html.TextBoxFor(m => m.maxPrice, new { @type = "number", @min = "0", @step = "1", @class = "form-control" })
+            </div>
+            <div class="col-md-3">
+                <label>Options :</label>
+                <select name="options" id="options" class="selectpicker" multiple>
+                    @foreach (SelectListItem option in optionList)
+                    {
+                        if (Model.options != null && Model.options.Where(x => x.ToString() == option.Value).Count() > 0)
+                        {
+                            <option value="@option.Value" selected>@option.Text</option>
+                        }
+                        else
+                        {
+                            <option value="@option.Value">@option.Text</option>
+                        }
+                    }
+                </select>
+                
+            </div>
+            <div class="col-md-3">
+                <!--div style="height:25px"></!--div>-->
+                <label>&nbsp;</label>
+                <div>
+                    <input type="submit" class="btn btn-primary form-group" value="Rechercher" />&nbsp;&nbsp;&nbsp;&nbsp;
+                    <a href="@Url.Action("Index", "Property")" class="btn btn-default">Réinitialiser</a>
+                </div>
+                
+            </div>
+        </div>
+    }
+</div>
+
+<script src="~/bundles/jquery"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
+
+<script>
+
+    $('.selectpicker').selectpicker();
+  
+</script>

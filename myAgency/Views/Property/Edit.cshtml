@@ -1,0 +1,186 @@
+﻿@using myAgency.Models;
+@using System.Linq;
+
+@model Property
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    IList<SelectListItem> heatList = ViewBag.heatTypes;
+    IList<SelectListItem> optionList = ViewBag.optionList;
+    string title = "Ajouter un bien";
+    if (Model.id != 0)
+    {
+        title = "Editer le bien n°" + Model.id;
+    }
+    int optionCount = 0;
+}
+<!--link rel="stylesheet" href="~/Content/multiple-select.css" type="text/css"/-->
+
+<h2>@title</h2>
+@using (Html.BeginForm("Edit", "Property", FormMethod.Post,
+      new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+    if (Model.id != 0)
+    {
+        <input type="hidden" name="created_at" id="created_at" value="@Model.created_at" />
+        //Html.HiddenFor(m => m.id); inutile ?
+    }
+    @Html.ValidationSummary(true)
+    <div class="container">
+        <div class="row">
+            <div class="form-group col-sm-4">
+                @Html.LabelFor(m => m.title)
+                @Html.TextBoxFor(m => m.title, new { @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m=>m.title)
+            </div>
+            <div class="form-group col-sm-4">
+                @Html.LabelFor(m => m.surface)
+                @Html.TextBoxFor(m => m.surface, new { @type = "number", @min = "0", @step = "1", @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m => m.surface)
+            </div>
+            <div class="form-group col-sm-4">
+                @Html.LabelFor(m => m.price)
+                @Html.TextBoxFor(m => m.price, new { @type = "number", @min = "0", @step = "1", @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m => m.price)
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-2">
+                @Html.LabelFor(m => m.rooms)
+                @Html.TextBoxFor(m => m.rooms, new { @type = "number", @min = "0", @step = "1", @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m => m.rooms)
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="form-group col-sm-2">
+                @Html.LabelFor(m => m.bedrooms)
+                @Html.TextBoxFor(m => m.bedrooms, new { @type = "number", @min = "0", @step = "1", @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m => m.bedrooms)
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="form-group col-sm-2">
+                @Html.LabelFor(m => m.heat)
+                @Html.DropDownListFor(m => m.heat, heatList, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.heat)
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="form-group col-sm-2">
+                @Html.LabelFor(m => m.floor)
+                @Html.TextBoxFor(m => m.floor, new { @type = "number", @min = "0", @step = "1", @class = "form-control", required = "required" })
+            </div>
+        </div>
+        <div class="row">
+            <div class="custom-file col-sm-2">
+                @Html.LabelFor(m => m.filename)
+                @Html.TextBoxFor(m => m.filename, new { @type = "file", @class = "custom-file-input form-control" })
+            </div>
+            <div class="form-group col-sm-3">
+                @Html.LabelFor(m => m.address)
+                @Html.TextBoxFor(m => m.address, new { @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m => m.address)
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="form-group col-sm-2">
+                @Html.LabelFor(m => m.city)
+                @Html.TextBoxFor(m => m.city, new { @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m => m.city)
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="form-group col-sm-2">
+                @Html.LabelFor(m => m.postal_code)
+                @Html.TextBoxFor(m => m.postal_code, new { @type = "number", @min = "0", @step = "1", @class = "form-control", required = "required" })
+                @Html.ValidationMessageFor(m => m.postal_code)
+            </div>
+        </div>
+        <div class="row">
+            <div class="form-group col-sm-4">
+                @Html.LabelFor(m => m.description)
+                @Html.TextAreaFor(m => m.description, new { @class = "form-control", @rows = "5" })
+            </div>
+            <div class="form-group col-sm-4">
+                @Html.LabelFor(m => m.Option)
+                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true" style="width:80%">
+                    <div class="panel panel-default">
+                        <div class="panel-heading" role="tab" id="headingOne">
+                            <h4 class="panel-title">
+                                <a role="button" id="optionButton" data-parent="#accordion" aria-expanded="false">
+                                    <span class="icone"></span>
+                                    Sélectionner parmis les options
+                                </a>
+                            </h4>
+                            <!--data-toggle="collapse" aria-controls="collapseOne" href="#collapseOne"-->
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse in" role="tabpanel" aria-labelledby="headingOne">
+                            <div class="panel-body">
+                                @foreach (SelectListItem option in optionList)
+                                {
+                                    if (Model.Option.Where(x => x.id.ToString() == option.Value).Count() > 0)
+                                    {
+                                        <div>
+                                            <input type="checkbox" name="Option[@optionCount].id" value="@option.Value" checked />
+                                            <label for="Option[@optionCount].id">@option.Text</label>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div>
+                                            <input type="checkbox" name="Option[@optionCount].id" value="@option.Value" />
+                                            <label for="Option[@optionCount].id">@option.Text</label>
+                                        </div>
+                                    }
+                                    <input type="hidden" name="Option[@optionCount].id" id="Option[@optionCount].id" value="0" />
+                                    <input type="hidden" name="Option[@optionCount].name" value="@optionCount" />
+                                    optionCount++;
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-1"></div>
+            <div class="form-group col-sm-3">
+                <br />
+                @Html.EditorFor(m => m.sold, new { @type = "checkbox", @class = "form-control" })
+                <strong>Vendu</strong>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-1 col-sm-2 col-xs-3">
+            <a href="@Url.Action("Admin", "Property")" class="btn btn-default">Annuler</a>
+        </div>
+        <div class="col-md-1 col-sm-2 col-xs-3">
+            <input type="submit" class="btn btn-primary form-group" value="Enregistrer" />
+        </div>
+    </div>
+    
+}
+
+<script src="~/bundles/jquery"></script>
+<script>
+    var collapse = $('#collapseOne');
+    var icone = $('.icone');
+    var html = '';
+
+    $(document).ready(function () {
+        collapse.css("display", "none");
+        html = '<i class="glyphicon glyphicon-chevron-down"></i>'
+        icone.html(html);
+    });
+    $('#optionButton').click(function () {
+        var _display = collapse.css('display');
+        icone.html('');
+        if (_display == 'none') {
+            collapse.css("display", "inline");
+            html = '<i class="glyphicon glyphicon-chevron-up"></i>';
+            icone.html(html);
+        }
+        else if (_display == 'inline') {
+            collapse.css('display', 'none');
+            html = '<i class="glyphicon glyphicon-chevron-down"></i>';
+            icone.html(html);
+        }
+
+    });
+
+</script>

@@ -1,0 +1,58 @@
+﻿@using myAgency.Models;
+
+@model List<Option>
+@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Gérer les options</h2>
+
+<div class="pull-right">
+    <a href="@Url.Action("Edit", "Option")" class="btn btn-primary">Ajouter une option</a>
+</div>
+
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success" role="alert" style="width:50%">@TempData["success"]</div>
+}
+@if (TempData["error"] != null)
+{
+    <div class="alert alert-danger" role="alert" style="width:50%">@TempData["error"]</div>
+}
+
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            @foreach (Option option in Model)
+            {
+                <tr>
+                    <td>@option.name</td>
+                    <td>
+                        <a href="@Url.Action("Edit", "Option", new { id=option.id })" class="btn btn-default">Editer</a>
+                        <a href="@Url.Action("Delete", "Option", new { id=option.id })" onclick="confirmSuppr(this)" class="btn btn-danger" id="@option.id">
+                            Supprimer
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+<script src="~/bundles/jquery"></script>
+<script>
+    function confirmSuppr(elt) {
+        if (!confirm("Supprimer l'option " + elt.id + " ?")) {
+            elt.setAttribute("href", "./Admin");
+        }
+    }
+</script>
+

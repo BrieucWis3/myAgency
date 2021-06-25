@@ -1,0 +1,39 @@
+﻿@using myAgency.Models;
+@using System.Globalization;
+
+@model List<Property>
+
+@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron text-center">
+    <h1>Agence myAgency</h1>
+    <p>
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Mauris semper enim tellus, ut finibus est
+        ornare quis. Cras sodales nulla vel efficitur pretium. Donec magna sem, aliquet ac tempor id, sagittis
+        vel nisi. Vestibulum quis sollicitudin mauris.
+    </p>
+</div>
+
+<div class="container">
+    <h2>Les derniers biens</h2>
+    <div class="row">
+        @foreach (var property in Model)
+        {
+            <div class="col-sm-3 col-xs-12">
+                <div class="card">
+                    <img class="card-img-top" src="~/Fichiers/20190518_213541.jpg" alt="Card image cap" style="width: 100%; height:auto;">
+                    <div class="card-body">
+                        <h4> <a href="@Url.Action("Show", "Property", new { id=property.id})">@property.title</a></h4>
+                        <p class="card-text">@property.city @property.postal_code </p>
+                        <p class="text-primary" style="font-weight: bold; font-size: 2rem; ">
+                            @property.price.ToString("C0", CultureInfo.CreateSpecificCulture("fr-FR"))
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>

@@ -1,0 +1,28 @@
+﻿@using myAgency.Models;
+@using System.Linq;
+
+@model Option
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    string title = "Ajouter une option";
+    if (Model.id != 0)
+    {
+        title = "Editer l'option n°" + Model.id;
+    }
+}
+
+<h2>@title</h2>
+@using (Html.BeginForm("Edit", "Option", FormMethod.Post,
+        new { enctype = "multipart/form-data", @class = "form-horizontal" }))
+{
+    <div class="container">
+        @Html.LabelFor(m => m.name)
+        @Html.TextBoxFor(m => m.name, new { @class = "form-control" })
+    </div>
+    <hr />
+
+    <a href="@Url.Action("Admin", "Option")" class="btn btn-default">Annuler</a>
+    <input type="submit" class="btn btn-primary" value="Enregistrer" />
+}
+

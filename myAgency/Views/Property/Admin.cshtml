@@ -1,0 +1,71 @@
+﻿@using myAgency.Models;
+
+@model List<Property>
+@{
+    ViewBag.Title = "Admin";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Gérer les biens</h2>
+<hr />
+<div class="pull-right">
+    <a href="@Url.Action("Edit", "Property")" class="btn btn-primary">Créer un nouveau bien</a>
+</div>
+
+    @if (TempData["success"] != null)
+    {
+        <div class="alert alert-success" role="alert" style="width:50%">@TempData["success"]</div>
+    }
+    @if (TempData["error"] != null)
+    {
+        <div class="alert alert-danger" role="alert" style="width:50%">@TempData["error"]</div>
+    }
+<div class="container">
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Titre</th>
+                <th>Action</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            @foreach (Property property in Model)
+            {
+                <tr>
+                    <td>@property.title</td>
+                    <td>
+                        <a href="@Url.Action("Edit", "Property", new { id=property.id })" class="btn btn-default edit" id="@property.id">Editer</a>
+                        <a href="@Url.Action("Delete", "Property", new { id=property.id })" onclick="confirmSuppr(this)" class="btn btn-danger" id="@property.id">Supprimer</a>
+                        
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+
+    </table>
+
+</div>
+
+<script src="~/bundles/jquery"></script>
+<script>
+    function confirmSuppr(elt) {
+        if (!confirm("Supprimer le bien " + elt.id + " ?")) {
+            elt.setAttribute("href", "./Admin");
+        }
+    }
+    /*
+    var elt = $('.edit');
+    elt.click(function () {
+        if (confirm("Editer ce bien ?")) {
+
+            alert("oui on édite le bien " + elt.attr('id'));
+        }
+        else {
+            alert("non on n'édite pas le bien " + elt.attr('id'));
+        }
+    });*/
+</script>    
+
+
