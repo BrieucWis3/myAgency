@@ -1,6 +1,7 @@
 ﻿@using myAgency.Models;
+@using PagedList.Mvc;
 
-@model List<Option>
+@model PagedList.IPagedList<Option>
 @{
     ViewBag.Title = "Admin";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -46,6 +47,11 @@
         </tbody>
     </table>
 </div>
+<hr />
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", "Property",
+    new { page }))
 
 <script src="~/bundles/jquery"></script>
 <script>

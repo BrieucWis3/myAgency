@@ -6,6 +6,7 @@
 //     Les modifications manuelles apportées à ce fichier sont remplacées si le code est régénéré.
 // </auto-generated>
 //------------------------------------------------------------------------------
+using System.ComponentModel.DataAnnotations;
 
 namespace myAgency.Models
 {
@@ -15,7 +16,13 @@ namespace myAgency.Models
     public partial class User
     {
         public int id { get; set; }
+
+        [Required]
+        [Display(Name ="Login :")]
         public string username { get; set; }
+
+        [Required]
+        [Display(Name ="Mot de passe :")]
         public string password { get; set; }
     }
 }

@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Data.Entity;
 using myAgency.Models;
+using PagedList;
 
 namespace myAgency.Controllers.Options
 {
@@ -19,12 +20,16 @@ namespace myAgency.Controllers.Options
             return RedirectToAction("Admin");
         }
 
-        public ActionResult Admin()
+        public ActionResult Admin(int? page)
         {
             try
             {
                 List<Option> options = db.Option.ToList();
-                return View(options);
+
+                int pageSize = 10;
+                int pageNumber = page ?? 1;
+
+                return View(options.ToPagedList(pageNumber, pageSize));
             }
             catch
             {

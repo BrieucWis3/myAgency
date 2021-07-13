@@ -1,6 +1,8 @@
 ﻿@using myAgency.Models;
+@using PagedList.Mvc;
 
-@model List<Property>
+@model PagedList.IPagedList<Property>
+
 @{
     ViewBag.Title = "Admin";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -12,14 +14,14 @@
     <a href="@Url.Action("Edit", "Property")" class="btn btn-primary">Créer un nouveau bien</a>
 </div>
 
-    @if (TempData["success"] != null)
-    {
-        <div class="alert alert-success" role="alert" style="width:50%">@TempData["success"]</div>
-    }
-    @if (TempData["error"] != null)
-    {
-        <div class="alert alert-danger" role="alert" style="width:50%">@TempData["error"]</div>
-    }
+@if (TempData["success"] != null)
+{
+    <div class="alert alert-success" role="alert" style="width:50%">@TempData["success"]</div>
+}
+@if (TempData["error"] != null)
+{
+    <div class="alert alert-danger" role="alert" style="width:50%">@TempData["error"]</div>
+}
 <div class="container">
     <table class="table table-striped">
         <thead>
@@ -37,7 +39,7 @@
                     <td>
                         <a href="@Url.Action("Edit", "Property", new { id=property.id })" class="btn btn-default edit" id="@property.id">Editer</a>
                         <a href="@Url.Action("Delete", "Property", new { id=property.id })" onclick="confirmSuppr(this)" class="btn btn-danger" id="@property.id">Supprimer</a>
-                        
+
                     </td>
                 </tr>
 
@@ -47,6 +49,10 @@
     </table>
 
 </div>
+<hr />
+
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Admin", "Property", new { page }))
 
 <script src="~/bundles/jquery"></script>
 <script>
@@ -66,6 +72,6 @@
             alert("non on n'édite pas le bien " + elt.attr('id'));
         }
     });*/
-</script>    
+</script>
 
 

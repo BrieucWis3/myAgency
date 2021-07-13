@@ -243,6 +243,7 @@
     <Content Include="Views\Option\Admin.cshtml" />
     <Content Include="Views\Option\Edit.cshtml" />
     <Content Include="Views\Property\_Search.cshtml" />
+    <Content Include="Views\Home\Login.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

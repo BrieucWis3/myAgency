@@ -7,6 +7,7 @@ using System.Web;
 using System.Web.Mvc;
 using myAgency.Models;
 using System.IO;
+using PagedList;
 
 namespace myAgency.Controllers.Properties
 {
@@ -35,8 +36,35 @@ namespace myAgency.Controllers.Properties
 
         // GET: Property
         [HttpGet]
-        public ActionResult Index(PropertySearchViewModel searchModel)
+        public ActionResult Index(PropertySearchViewModel searchModel, int? page)
         {
+            // on récupère les options initialement filtrées pour les ajouter dans le cas où on les a perdues d'une page à l'autre
+            var baseOptions = (List<int>)TempData["baseOptions"];
+            
+            /* Pour cela, on traite le cas où l'on a plusieurs pages renvoyées et où l'on dispose d'options initialement 
+             * sélectionnées dans le filtrage :
+             * */
+
+            // pour tester les cas où l'on a plusieurs page
+            int pageCount=0;
+            if(TempData["pageCount"] != null)
+            {
+                pageCount = int.Parse(TempData["pageCount"].ToString());
+            }
+            /* ensuite celui où l'on a des options qui doivent être prises en compte sur toutes ces pages :
+             * - on teste d'abords si page est null car on ne doit pas opérer à cette instruction en cas de réinitialisation, sinon
+             on conserve le filtrage sur les options même si l'on réinitialise
+               - ensuite, on teste la valeur de baseOptions(les options initiales), si ce n'est pas null, c'est que des options ont
+                 été transmises d'une page à l'autre donc on les affecte à l'attribut 'options' de notre viewModel, lesquel avaient 
+                 été perdues à la base (car searchModel.options == null) */
+            if (page != null && pageCount > 1 && baseOptions != null)
+            {
+                if(searchModel.options == null)
+                {
+                    searchModel.options = baseOptions;
+                }
+            }
+
             List<Property> properties = db.Property.ToList();
 
             if (searchModel.minSurface != 0)
@@ -49,6 +77,10 @@ namespace myAgency.Controllers.Properties
             }
             if (searchModel.options!= null && searchModel.options.Count != 0)
             {
+                /* on transmet à la vue index les options initiales afin qu'on ne les perde pas lors du passage d'une 
+                 * page à l'autre, car les boutons de la paginations ne transmettent pas les données multiples telles que
+                 'option' comme le fait le formulaire de filtrage. D'où le TempData["options"] */
+                TempData["options"] = searchModel.options; 
                 List<Option> filteredOption = db.Option.Where(x => searchModel.options.Contains(x.id)).ToList();
 
                 foreach (Option fo in filteredOption)
@@ -61,7 +93,10 @@ namespace myAgency.Controllers.Properties
              dans cette même vue afin que la méthode intègre les champs du formulaire déjà saisis et devant ainsi être préremplis*/
             TempData["model"] = searchModel;
 
-            return View(properties);
+            int pageSize = 9;
+            int pageNumber = page ?? 1;
+
+            return View(properties.ToPagedList(pageNumber, pageSize));
         }
 
         [HttpGet]
@@ -92,12 +127,16 @@ namespace myAgency.Controllers.Properties
             
         }
 
-        public ActionResult Admin()
+        public ActionResult Admin(int? page)
         {
             try
             {
                 List<Property> properties = db.Property.ToList();
-                return View(properties);
+                
+                int pageSize = 10;
+                int pageNumber = page ?? 1;
+
+                return View(properties.ToPagedList(pageNumber, pageSize));
             }
             catch
             {

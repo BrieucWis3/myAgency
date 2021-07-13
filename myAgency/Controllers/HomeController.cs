@@ -18,6 +18,18 @@ namespace myAgency.Controllers
             return View(properties);
         }
 
+        public ActionResult Login()
+        {
+            User user = new User();
+            return View(user);
+        }
+
+        [HttpPost]
+        public ActionResult Login(User user)
+        {
+            return RedirectToAction("Index");
+        }
+
         /*
         public ActionResult About()
         {

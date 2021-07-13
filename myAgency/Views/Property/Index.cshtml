@@ -1,22 +1,32 @@
 ﻿@using myAgency.Models;
 @using System.Globalization;
+@using PagedList.Mvc;
 
-@model List<Property>
+@model PagedList.IPagedList<Property>
 
 @{
     ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_Layout.cshtml";
+    PropertySearchViewModel searchModel = (PropertySearchViewModel)TempData["model"];
+
+    /* pour transmettre à la méthode index les options initialement filtrées (voir commentaire sur le TempData["options"]  
+       dans la méthode Index du PropertyController */
+    if (TempData["options"]!=null)
+    {
+        var options = TempData["options"];
+        TempData["baseOptions"] = options;
+    }
 }
 
 <div class="jumbotron">
     <!--on transmet ici à la méthode Search() le modèle de filtrage initialement saisis s'il existe afin que la méthode intègre
      les champs de filtrage déjà saisis et devant être préremplis (transmis depuis la méthode Index() )  -->
-        @Html.Action("Search", "Property", new { model=TempData["model"] })
+    @Html.Action("Search", "Property", new { model = searchModel })
 </div>
 
 <div class="container">
     <h1>Voir tous nos biens</h1>
-    <a href="@Url.Action("Admin", "Property")" class="btn btn-primary">Gérer les biens</a> 
+    <a href="@Url.Action("Admin", "Property")" class="btn btn-primary">Gérer les biens</a>
     <a href="@Url.Action("Admin", "Option")" class="btn btn-primary">Gérer les options</a>
 </div>
 
@@ -54,5 +64,13 @@
     </div>
 </div>
 
+<hr />
 
+@{ /* ici on transmet le nombre de page renvoyées pour s'en servir dans la méthode Index afin de traiter le problème de conservation
+    des options */
+    TempData["pageCount"] = Model.PageCount;
+}
 
+Page @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) of @Model.PageCount
+@Html.PagedListPager(Model, page => Url.Action("Index", "Property", 
+    new { page, minSurface=searchModel.minSurface, maxPrice=searchModel.maxPrice }))
